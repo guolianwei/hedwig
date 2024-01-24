@@ -18,15 +18,10 @@
 
 package org.apache.falcon.hive;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.falcon.hive.util.FileUtils;
 
-import java.io.File;
 import java.util.*;
 
 import static org.apache.falcon.hive.util.FileUtils.HDFS_SEP;
@@ -150,7 +145,7 @@ public class HiveDROptions {
     }
 
     public boolean shouldKeepHistory() {
-        return Boolean.valueOf(context.get(HiveDRArgs.KEEP_HISTORY));
+        return Boolean.parseBoolean(context.get(HiveDRArgs.KEEP_HISTORY));
     }
 
     public String getJobClusterWriteEP() {

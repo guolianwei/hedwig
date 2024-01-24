@@ -33,7 +33,6 @@ import org.apache.hadoop.tools.DistCp;
 import org.apache.hadoop.tools.DistCpOptions;
 import org.apache.hive.hcatalog.api.repl.Command;
 import org.apache.hive.hcatalog.api.repl.ReplicationUtils;
-import org.apache.hive.hcatalog.api.repl.commands.ExportCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,11 +43,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,7 +56,7 @@ public class EventUtils {
     private static final String JDBC_PREFIX = "jdbc:";
     private static final int RETRY_ATTEMPTS = 3;
 
-    private Configuration conf = null;
+    private Configuration conf;
     private String sourceHiveServer2Uri = null;
     private String sourceHS2UriExtraOptions = null;
     private String sourceDatabase = null;
@@ -73,12 +68,12 @@ public class EventUtils {
     private String targetHS2UriExtraOptions = null;
     private String sourceStagingPath = null;
     private String targetStagingPath = null;
-    private String targetNN = null;
-    private String targetNNKerberosPrincipal = null;
+    private String targetNN;
+    private String targetNNKerberosPrincipal;
     private String sourceStagingUri = null;
     private String targetStagingUri = null;
-    private List<Path> sourceCleanUpList = null;
-    private List<Path> targetCleanUpList = null;
+    private List<Path> sourceCleanUpList;
+    private List<Path> targetCleanUpList;
     private static final Logger LOG = LoggerFactory.getLogger(EventUtils.class);
 
     private FileSystem sourceFileSystem = null;
@@ -374,7 +369,7 @@ public class EventUtils {
                     + " EventId:" + eventId
                     + " DB Name:" + dbName
                     + " Table Name:" + tableName
-                    + hre.toString());
+                    + hre);
         }
     }
 

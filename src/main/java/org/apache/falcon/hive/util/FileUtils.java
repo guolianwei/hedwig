@@ -25,7 +25,6 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsAction;
 import org.apache.hadoop.fs.permission.FsPermission;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -44,7 +43,7 @@ public final class FileUtils {
     }
 
     public static Configuration getConfiguration(Configuration conf,
-                                                 final String writeEP, final String nnKerberosPrincipal) throws IOException {
+                                                 final String writeEP, final String nnKerberosPrincipal) {
         Configuration newConf = new Configuration(conf);
         newConf.set("fs.defaultFS", writeEP);
         if (StringUtils.isNotEmpty(nnKerberosPrincipal)) {
@@ -57,7 +56,7 @@ public final class FileUtils {
         if (!fileSystem.exists(basePath)) {
             throw new IOException("Please create base dir " + fileSystem.getUri() + basePath
                     + ". Please set group to " + DRStatusStore.getStoreGroup()
-                    + " and permissions to " + DRStatusStore.DEFAULT_STORE_PERMISSION.toString());
+                    + " and permissions to " + DRStatusStore.DEFAULT_STORE_PERMISSION);
         }
 
         //777权限直接验证成功
@@ -70,7 +69,7 @@ public final class FileUtils {
             throw new IOException("Base dir " + fileSystem.getUri() + basePath
                     + " does not have correct ownership/permissions."
                     + " Please set group to " + DRStatusStore.getStoreGroup()
-                    + " and permissions to " + DRStatusStore.DEFAULT_STORE_PERMISSION.toString());
+                    + " and permissions to " + DRStatusStore.DEFAULT_STORE_PERMISSION);
         }
 
     }

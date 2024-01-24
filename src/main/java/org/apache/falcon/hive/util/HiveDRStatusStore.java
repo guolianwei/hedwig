@@ -32,7 +32,6 @@ import org.apache.hadoop.fs.permission.FsPermission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,7 +99,7 @@ public class HiveDRStatusStore extends DRStatusStore {
     @Override
     public void updateReplicationStatus(String jobName, List<ReplicationStatus> statusList)
         throws HiveReplicationException {
-        Map<String, DBReplicationStatus> dbStatusMap = new HashMap<String, DBReplicationStatus>();
+        Map<String, DBReplicationStatus> dbStatusMap = new HashMap<>();
         for (ReplicationStatus status : statusList) {
             if (!status.getJobName().equals(jobName)) {
                 String error = "JobName for status does not match current job \"" + jobName
@@ -229,7 +228,7 @@ public class HiveDRStatusStore extends DRStatusStore {
             Path latestFile = new Path(statusDir + "/" + LATEST_FILE);
             if (fileSystem.exists(latestFile)) {
                 Path renamedFile = new Path(statusDir + "/"
-                        + String.valueOf(fileSystem.getFileStatus(latestFile).getModificationTime()) + ".json");
+                        + fileSystem.getFileStatus(latestFile).getModificationTime() + ".json");
                 fileSystem.rename(latestFile, renamedFile);
             }
 
@@ -248,7 +247,7 @@ public class HiveDRStatusStore extends DRStatusStore {
 
     public void rotateStatusFiles(Path statusDir, int numFiles, int maxFileAge) throws HiveReplicationException {
 
-        List<String> fileList = new ArrayList<String>();
+        List<String> fileList = new ArrayList<>();
         long now = System.currentTimeMillis();
         try {
             RemoteIterator<LocatedFileStatus> fileIterator = fileSystem.listFiles(statusDir, false);
@@ -284,7 +283,7 @@ public class HiveDRStatusStore extends DRStatusStore {
                 return new DBReplicationStatus(IOUtils.toString(fileSystem.open(statusFile)));
             }
         } catch (IOException e) {
-            String error = "Failed to read latest Replication status from dir " + statusDirPath.toString();
+            String error = "Failed to read latest Replication status from dir " + statusDirPath;
             LOG.error(error);
             throw new HiveReplicationException(error);
         }

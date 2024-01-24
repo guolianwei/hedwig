@@ -24,13 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.falcon.hive.exception.HiveReplicationException;
 import org.apache.falcon.hive.mapreduce.CopyMapper;
 import org.apache.falcon.hive.mapreduce.CopyReducer;
-import org.apache.falcon.hive.util.DRStatusStore;
-import org.apache.falcon.hive.util.DelimiterUtils;
-import org.apache.falcon.hive.util.EventSourcerUtils;
-import org.apache.falcon.hive.util.FileUtils;
-import org.apache.falcon.hive.util.HiveDRStatusStore;
-import org.apache.falcon.hive.util.HiveDRUtils;
-import org.apache.falcon.hive.util.HiveMetastoreUtils;
+import org.apache.falcon.hive.util.*;
 import org.apache.falcon.job.JobCounters;
 import org.apache.falcon.job.JobCountersHandler;
 import org.apache.falcon.job.JobType;
@@ -53,7 +47,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -248,7 +241,7 @@ public class HiveDRTool extends Configured implements Tool {
         return job;
     }
 
-    private void createStagingDirectory() throws IOException, HiveReplicationException {
+    private void createStagingDirectory() throws IOException {
         Path sourceStagingPath = new Path(inputOptions.getSourceStagingPath());
         Path targetStagingPath = new Path(inputOptions.getTargetStagingPath());
         LOG.info("Source staging path: {}", sourceStagingPath);
@@ -262,7 +255,7 @@ public class HiveDRTool extends Configured implements Tool {
         }
     }
 
-    private void cleanStagingDirectory() throws HiveReplicationException {
+    private void cleanStagingDirectory() {
         LOG.info("Cleaning staging directories");
         Path sourceStagingPath = new Path(inputOptions.getSourceStagingPath());
         Path targetStagingPath = new Path(inputOptions.getTargetStagingPath());
@@ -281,7 +274,7 @@ public class HiveDRTool extends Configured implements Tool {
 
     private String sourceEvents() throws Exception {
         MetaStoreEventSourcer defaultSourcer = null;
-        String inputFilename = null;
+        String inputFilename;
         String lastEventsIdFile = FileUtils.DEFAULT_EVENT_STORE_PATH + HDFS_SEP
                 + inputOptions.getJobName() + HDFS_SEP + inputOptions.getJobName() + ".id";
         Map<String, Long> lastEventsIdMap = getLastDBTableEvents(new Path(lastEventsIdFile));

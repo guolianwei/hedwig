@@ -24,13 +24,10 @@ import org.apache.falcon.hive.util.HiveDRStatusStore;
 import org.apache.falcon.hive.util.HiveDRUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 

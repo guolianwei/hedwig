@@ -29,7 +29,6 @@ import org.apache.hadoop.util.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +78,7 @@ public final class HiveDRUtils {
             final boolean actionConfExists = confPath.getFileSystem(conf).exists(confPath);
             LOG.info("Oozie Action conf {} found ? {}", confPath, actionConfExists);
             if (actionConfExists) {
-                LOG.info("Oozie Action conf found, adding path={}, conf={}", confPath, conf.toString());
+                LOG.info("Oozie Action conf found, adding path={}, conf={}", confPath, conf);
                 conf.addResource(confPath);
             }
         }
@@ -120,7 +119,7 @@ public final class HiveDRUtils {
     }
 
     public static Map<String, Long> fetchReplicationCounters(Configuration conf,
-                                                             Job job) throws IOException, InterruptedException {
+                                                             Job job) throws IOException {
         JobCounters hiveReplicationCounters = JobCountersHandler.getCountersType(
                 JobType.HIVEREPLICATION.name());
         hiveReplicationCounters.obtainJobCounters(conf, job, true);
