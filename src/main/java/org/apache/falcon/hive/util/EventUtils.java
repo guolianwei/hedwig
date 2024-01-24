@@ -291,7 +291,6 @@ public class EventUtils {
             matcher.appendReplacement(output, Matcher.quoteReplacement(matchedString));
         }
         matcher.appendTail(output);
-        System.out.println(output.toString());
         return output.toString();
     }
 

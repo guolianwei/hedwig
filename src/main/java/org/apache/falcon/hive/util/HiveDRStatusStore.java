@@ -41,6 +41,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.falcon.hive.util.FileUtils.HDFS_SEP;
+
 /**
  * DRStatusStore implementation for hive.
  */
@@ -50,8 +52,8 @@ public class HiveDRStatusStore extends DRStatusStore {
     private FileSystem fileSystem;
 
     private static final String DEFAULT_STORE_PATH = StringUtils.removeEnd(
-            DRStatusStore.BASE_DEFAULT_STORE_PATH, File.separator) + File.separator
-            + "hiveReplicationStatusStore" + File.separator;
+            DRStatusStore.BASE_DEFAULT_STORE_PATH, HDFS_SEP) + HDFS_SEP
+            + "hiveReplicationStatusStore" + HDFS_SEP;
 
     private static final FsPermission DEFAULT_STATUS_DIR_PERMISSION =
             new FsPermission(FsAction.ALL, FsAction.ALL, FsAction.NONE);
@@ -291,7 +293,7 @@ public class HiveDRStatusStore extends DRStatusStore {
     public void checkForReplicationConflict(String newSource, String jobName,
                                             String database, String table) throws HiveReplicationException {
         try {
-            Path globPath = new Path(getStatusDbDirPath(database), "*" + File.separator + "latest.json");
+            Path globPath = new Path(getStatusDbDirPath(database), "*" + HDFS_SEP + "latest.json");
             FileStatus[] files = fileSystem.globStatus(globPath);
             for (FileStatus file : files) {
                 DBReplicationStatus dbFileStatus = new DBReplicationStatus(IOUtils.toString(

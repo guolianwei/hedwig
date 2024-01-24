@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.falcon.hive.util.FileUtils.HDFS_SEP;
+
 /**
  * Hive replication utility class.
  */
@@ -57,7 +59,7 @@ public final class HiveDRUtils {
 
     private static final String ALL_TABLES = "*";
 
-    public static final String SEPARATOR = File.separator;
+    public static final String SEPARATOR = HDFS_SEP;
 
     private static final Logger LOG = LoggerFactory.getLogger(HiveDRUtils.class);
 

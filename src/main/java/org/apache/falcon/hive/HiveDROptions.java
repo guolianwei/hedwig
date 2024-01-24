@@ -29,6 +29,8 @@ import org.apache.falcon.hive.util.FileUtils;
 import java.io.File;
 import java.util.*;
 
+import static org.apache.falcon.hive.util.FileUtils.HDFS_SEP;
+
 /**
  * Tool Options.
  */
@@ -81,11 +83,11 @@ public class HiveDROptions {
         String stagingPath = context.get(HiveDRArgs.SOURCE_STAGING_PATH);
         String srcStagingPath;
         if ("NA".equalsIgnoreCase(stagingPath)) {
-            stagingPath = StringUtils.removeEnd(FileUtils.DEFAULT_EVENT_STORE_PATH, File.separator);
-            srcStagingPath = stagingPath + File.separator + getJobName();
+            stagingPath = StringUtils.removeEnd(FileUtils.DEFAULT_EVENT_STORE_PATH,HDFS_SEP);
+            srcStagingPath = stagingPath + HDFS_SEP + getJobName();
         } else {
-            stagingPath = StringUtils.removeEnd(stagingPath, File.separator);
-            srcStagingPath = stagingPath + File.separator + getJobName();
+            stagingPath = StringUtils.removeEnd(stagingPath, HDFS_SEP);
+            srcStagingPath = stagingPath + HDFS_SEP + getJobName();
         }
         context.put(HiveDRArgs.SOURCE_STAGING_PATH, srcStagingPath);
     }
@@ -126,11 +128,11 @@ public class HiveDROptions {
         String stagingPath = context.get(HiveDRArgs.TARGET_STAGING_PATH);
         String targetStagingPath;
         if ("NA".equalsIgnoreCase(stagingPath)) {
-            stagingPath = StringUtils.removeEnd(FileUtils.DEFAULT_EVENT_STORE_PATH, File.separator);
-            targetStagingPath = stagingPath + File.separator + getJobName();
+            stagingPath = StringUtils.removeEnd(FileUtils.DEFAULT_EVENT_STORE_PATH, HDFS_SEP);
+            targetStagingPath = stagingPath + HDFS_SEP + getJobName();
         } else {
-            stagingPath = StringUtils.removeEnd(stagingPath, File.separator);
-            targetStagingPath = stagingPath + File.separator + getJobName();
+            stagingPath = StringUtils.removeEnd(stagingPath, HDFS_SEP);
+            targetStagingPath = stagingPath + HDFS_SEP + getJobName();
         }
         context.put(HiveDRArgs.TARGET_STAGING_PATH, targetStagingPath);
     }

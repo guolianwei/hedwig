@@ -21,9 +21,14 @@ package org.apache.falcon.hive;
 import org.apache.falcon.hive.util.DRStatusStore;
 import org.apache.falcon.hive.util.FileUtils;
 import org.apache.falcon.hive.util.HiveDRStatusStore;
+import org.apache.falcon.hive.util.HiveDRUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,99 +39,83 @@ import java.util.Map;
  */
 
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DRTest {
+    public void testHiveDrExport(String executionStage) {
+        //EXPORT,LASTEVENTS
+        String source = "nn2";
+        String target = "nn1";
+        String[] testArgs = {
+                "-sourceMetastoreUri", String.format("thrift://%s:9083", source),
+                "-sourceDatabases", "default",
+                "-sourceTables", "*",
+                "-sourceStagingPath", "/apps/hive/tools/dr",
+                "-sourceNN", String.format("hdfs://%s:8020", source),
+                "-sourceCluster", source,
+                "-sourceHiveServer2Uri", String.format("hive2://%s:10000", source),
+                "-sourceDatabase", "default",
+
+                "-targetCluster", target,
+                "-targetHiveServer2Uri", String.format("hive2://%s:10000", target),
+                "-targetMetastoreUri", String.format("thrift://%s:9083", target),
+                "-targetStagingPath", "/apps/hive/tools/dr",
+                "-targetNN", String.format("hdfs://%s:8020", target),
+                "-hiveJobName", "synclab",
+                "-clusterForJobRun", source,
+                "-clusterForJobRunWriteEP", target,
+                "-maxEvents", "5",
+                "-replicationMaxMaps", "1",
+                "-distcpMapBandwidth", "4",
+                "-distcpMaxMaps", "4",
+                "-executionStage", executionStage
+        };
+        HiveDRTool.main(testArgs);
+    }
+
+
+
+    @Test
+    public void testHiveDrAxEvents() {
+        testHiveDrExport(HiveDRUtils.ExecutionStage.LASTEVENTS.name());
+    }
 
     @Test
     public void testHiveDrExport() {
-        //EXPORT,LASTEVENTS
-        String source = "nn2";
-        String target = "nn1";
-        String[] testArgs = {
-                "-sourceMetastoreUri", String.format("thrift://%s:9083", source),
-                "-sourceDatabases", "default",
-                "-sourceTables", "*",
-                "-sourceStagingPath", "/apps/hive/tools/dr",
-                "-sourceNN", String.format("hdfs://%s:8020", source),
-                "-sourceCluster", source,
-                "-sourceHiveServer2Uri", String.format("hive2://%s:10000", source),
-                "-sourceDatabase", "default",
-
-                "-targetCluster", target,
-                "-targetHiveServer2Uri", String.format("hive2://%s:10000", target),
-                "-targetMetastoreUri", String.format("thrift://%s:9083", target),
-                "-targetStagingPath", "/apps/hive/tools/dr",
-                "-targetNN", String.format("hdfs://%s:8020", target),
-                "-hiveJobName", "synclab",
-                "-clusterForJobRun", source,
-                "-clusterForJobRunWriteEP", target,
-                "-maxEvents", "5",
-                "-replicationMaxMaps", "1",
-                "-distcpMapBandwidth", "4",
-                "-executionStage", "EXPORT"
-        };
-        HiveDRTool.main(testArgs);
-    }
-    @Test
-    public void testHiveDr() {
-        //EXPORT,LASTEVENTS
-        String source = "nn2";
-        String target = "nn1";
-        String[] testArgs = {
-                "-sourceMetastoreUri", String.format("thrift://%s:9083", source),
-                "-sourceDatabases", "default",
-                "-sourceTables", "*",
-                "-sourceStagingPath", "/apps/hive/tools/dr",
-                "-sourceNN", String.format("hdfs://%s:8020", source),
-                "-sourceCluster", source,
-                "-sourceHiveServer2Uri", String.format("hive2://%s:10000", source),
-                "-sourceDatabase", "default",
-
-                "-targetCluster", target,
-                "-targetHiveServer2Uri", String.format("hive2://%s:10000", target),
-                "-targetMetastoreUri", String.format("thrift://%s:9083", target),
-                "-targetStagingPath", "/apps/hive/tools/dr",
-                "-targetNN", String.format("hdfs://%s:8020", target),
-                "-hiveJobName", "synclab",
-                "-clusterForJobRun", source,
-                "-clusterForJobRunWriteEP", target,
-                "-maxEvents", "5",
-                "-replicationMaxMaps", "1",
-                "-distcpMapBandwidth", "4",
-                "-executionStage", "LASTEVENTS"
-        };
-        HiveDRTool.main(testArgs);
+        testHiveDrExport(HiveDRUtils.ExecutionStage.EXPORT.name());
     }
 
     @Test
+    public void testHiveDrImport() {
+        testHiveDrExport(HiveDRUtils.ExecutionStage.IMPORT.name());
+    }
+
     public void testLastReplicatedEvents() {
-
-
         String source = "nn2";
         String target = "nn1";
         String targetMetastoreUri = String.format("thrift://%s:9083", target);
         String sourceMetastoreUri = String.format("thrift://%s:9083", source);
-        String targetNN=String.format("hdfs://%s:8020", target);
-        String sourceNN=String.format("hdfs://%s:8020", source);
+        String targetNN = String.format("hdfs://%s:8020", target);
+        String sourceNN = String.format("hdfs://%s:8020", source);
 //JOB_CLUSTER_NN
         Map<HiveDRArgs, String> options = new HashMap<>();
-        options.put(HiveDRArgs.SOURCE_TABLES,"*");
-        options.put(HiveDRArgs.SOURCE_DATABASES,"default");
-        options.put(HiveDRArgs.JOB_NAME,"synclab");
-        options.put(HiveDRArgs.SOURCE_METASTORE_URI,sourceMetastoreUri);
-        options.put(HiveDRArgs.TARGET_METASTORE_URI,targetMetastoreUri);
+        options.put(HiveDRArgs.SOURCE_TABLES, "*");
+        options.put(HiveDRArgs.SOURCE_DATABASES, "default");
+        options.put(HiveDRArgs.JOB_NAME, "synclab");
+        options.put(HiveDRArgs.SOURCE_METASTORE_URI, sourceMetastoreUri);
+        options.put(HiveDRArgs.TARGET_METASTORE_URI, targetMetastoreUri);
 
-        options.put(HiveDRArgs.TARGET_NN,targetNN);
-        options.put(HiveDRArgs.JOB_CLUSTER_NN,sourceNN);
+        options.put(HiveDRArgs.TARGET_NN, targetNN);
+        options.put(HiveDRArgs.JOB_CLUSTER_NN, sourceNN);
 
 
-        HiveDROptions hiveDROptions=new HiveDROptions(options);
+        HiveDROptions hiveDROptions = new HiveDROptions(options);
 
 
         try {
             Configuration conf = new Configuration();
             Configuration targetConf = FileUtils.getConfiguration(conf, hiveDROptions.getTargetWriteEP(),
                     hiveDROptions.getTargetNNKerberosPrincipal());
-            Configuration  jobConf = FileUtils.getConfiguration(conf, hiveDROptions.getJobClusterWriteEP(),
+            Configuration jobConf = FileUtils.getConfiguration(conf, hiveDROptions.getJobClusterWriteEP(),
                     hiveDROptions.getJobClusterNNPrincipal());
 
             FileSystem targetClusterFS = FileSystem.get(targetConf);
