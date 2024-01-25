@@ -390,18 +390,18 @@ public class EventUtils {
         // DistCpOptions expects the first argument to be a file OR a list of Paths
         List<Path> sourceUris = new ArrayList<>();
         sourceUris.add(new Path(sourceStagingUri));
-        DistCpOptions distcpOptions = new DistCpOptions(sourceUris, new Path(targetStagingUri));
+        DistCpOptions.Builder builder = new DistCpOptions.Builder(sourceUris, new Path(targetStagingUri));
+        builder.withSyncFolder(true);
 
         // setSyncFolder(true) ensures directory structure is maintained when source is copied to target
-        distcpOptions.setSyncFolder(true);
         // skipCRCCheck if TDE is enabled.
         if (Boolean.parseBoolean(conf.get(HiveDRArgs.TDE_ENCRYPTION_ENABLED.getName()))) {
-            distcpOptions.setSkipCRC(true);
+            builder.withCRC(true);
         }
-        distcpOptions.setBlocking(true);
-        distcpOptions.setMaxMaps(Integer.parseInt(conf.get(HiveDRArgs.DISTCP_MAX_MAPS.getName())));
-        distcpOptions.setMapBandwidth(Integer.parseInt(conf.get(HiveDRArgs.DISTCP_MAP_BANDWIDTH.getName())));
-        return distcpOptions;
+        builder.withBlocking(true);
+        builder.maxMaps(Integer.parseInt(conf.get(HiveDRArgs.DISTCP_MAX_MAPS.getName())));
+        builder.withMapBandwidth(Integer.parseInt(conf.get(HiveDRArgs.DISTCP_MAP_BANDWIDTH.getName())));
+        return builder.build();
     }
 
     public Long getCounterValue(String counterKey) {

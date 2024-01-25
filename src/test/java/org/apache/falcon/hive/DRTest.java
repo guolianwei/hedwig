@@ -93,7 +93,7 @@ public class DRTest {
         String sourceMetastoreUri = String.format("thrift://%s:9083", source);
         String targetNN = String.format("hdfs://%s:8020", target);
         String sourceNN = String.format("hdfs://%s:8020", source);
-//JOB_CLUSTER_NN
+        //JOB_CLUSTER_NN
         Map<HiveDRArgs, String> options = new HashMap<>();
         options.put(HiveDRArgs.SOURCE_TABLES, "*");
         options.put(HiveDRArgs.SOURCE_DATABASES, "default");
