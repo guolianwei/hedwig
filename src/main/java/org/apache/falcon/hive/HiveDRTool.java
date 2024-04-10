@@ -312,7 +312,7 @@ public class HiveDRTool extends Configured implements Tool {
         Map<String, Long> lastEventsIdMap = new HashMap<>();
         LOG.info("jobFS : "+jobFS.getCanonicalServiceName());
         BufferedReader in = new BufferedReader(new InputStreamReader(jobFS.open(lastEventIdFile)));
-        try {
+        try  {
             String line;
             while ((line = in.readLine()) != null) {
                 String[] field = line.trim().split(DelimiterUtils.TAB_DELIM, -1);

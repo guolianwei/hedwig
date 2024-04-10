@@ -53,11 +53,7 @@ public final class EntityBuilderTestUtil {
     public static Cluster buildCluster(String name, String colo, String tags) {
         Cluster cluster = new Cluster();
         cluster.setName(name);
-        cluster.setColo(colo);
-        cluster.setTags(tags);
-
-        Interfaces interfaces = new Interfaces();
-        cluster.setInterfaces(interfaces);
+      //  cluster.setInterfaces(interfaces);
 
         Interface storage = new Interface();
         storage.setEndpoint("jail://global:00");
